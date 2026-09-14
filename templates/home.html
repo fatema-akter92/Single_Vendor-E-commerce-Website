@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | TechMart Single Vendor Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Banner Carousel -->
+    <div id="heroCarousel" class="carousel slide hero-banner" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="row align-items-center">
+                    <div class="col-lg-7">
+                        <span class="badge bg-primary px-3 py-2 mb-3">New Arrivals 2026</span>
+                        <h1 class="display-4 text-white">Next-Gen Laptops & Computing Power</h1>
+                        <p class="lead text-light mb-4">Discover high-performance notebooks, ultra-fast processors, and pro graphics built for creator & gaming workloads.</p>
+                        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg me-2 px-4 shadow">
+                            <i class="bi bi-bag-check me-2"></i> Shop Products
+                        </a>
+                        <a href="{% url 'product_list' %}?category=laptops" class="btn btn-outline-light btn-lg px-4">
+                            Explore Laptops
+                        </a>
+                    </div>
+                    <div class="col-lg-5 text-center d-none d-lg-block">
+                        <i class="bi bi-laptop display-1 text-primary opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="row align-items-center">
+                    <div class="col-lg-7">
+                        <span class="badge bg-warning text-dark px-3 py-2 mb-3">Limited Time Deals</span>
+                        <h1 class="display-4 text-white">Premium Smartphones & Audio Tech</h1>
+                        <p class="lead text-light mb-4">Upgrade your daily gear with noise-canceling headphones, flagship smart devices, and accessories.</p>
+                        <a href="{% url 'product_list' %}" class="btn btn-warning btn-lg me-2 px-4 shadow text-dark fw-bold">
+                            <i class="bi bi-percent me-2"></i> View Discounts
+                        </a>
+                    </div>
+                    <div class="col-lg-5 text-center d-none d-lg-block">
+                        <i class="bi bi-headphones display-1 text-warning opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- Category Highlights Section -->
+    <div class="my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold m-0"><i class="bi bi-grid-fill text-primary me-2"></i> Shop by Category</h3>
+            <a href="{% url 'product_list' %}" class="btn btn-link text-decoration-none fw-semibold">View All <i class="bi bi-arrow-right"></i></a>
+        </div>
+        
+        <div class="row g-3">
+            {% for category in categories %}
+                <div class="col-6 col-md-4 col-lg-2.4">
+                    <a href="{% url 'product_list' %}?category={{ category.slug }}" class="category-card h-100">
+                        <i class="bi {{ category.icon }}"></i>
+                        <h6 class="fw-bold mb-0">{{ category.name }}</h6>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <p class="text-muted">No categories available.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Featured Products Section -->
+    <div class="my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold m-0"><i class="bi bi-stars text-warning me-2"></i> Featured Products</h3>
+            <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm px-3">See All Products</a>
+        </div>
+
+        <div class="row g-4">
+            {% for product in featured_products %}
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-img-wrapper">
+                            {% if product.discount_price %}
+                                <span class="badge-discount">Sale</span>
+                            {% endif %}
+                            <span class="badge bg-{% if product.quantity > 0 %}success{% else %}danger{% endif %} badge-stock">
+                                {% if product.quantity > 0 %}In Stock ({{ product.quantity }}){% else %}Out of Stock{% endif %}
+                            </span>
+                            <img src="{{ product.get_image_display }}" alt="{{ product.name }}">
+                        </div>
+                        <div class="product-body">
+                            <div class="product-rating">
+                                <i class="bi bi-star-fill"></i> {{ product.rating }}
+                            </div>
+                            <h5 class="product-title text-truncate" title="{{ product.name }}">{{ product.name }}</h5>
+                            <p class="product-desc-short">{{ product.description }}</p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex align-items-baseline mb-3">
+                                    <span class="product-price">${{ product.get_effective_price }}</span>
+                                    {% if product.discount_price %}
+                                        <span class="old-price">${{ product.price }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye me-1"></i> View Details
+                                    </a>
+                                    <form action="{% url 'cart_add' product.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary btn-sm w-100" {% if product.quantity == 0 %}disabled{% endif %}>
+                                            <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-box-seam display-1 text-muted"></i>
+                    <p class="lead mt-3">No products available in database.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

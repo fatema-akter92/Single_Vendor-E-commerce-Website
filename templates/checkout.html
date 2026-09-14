@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout | TechMart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="fw-bold mb-4"><i class="bi bi-shield-check text-primary me-2"></i> Order Checkout</h2>
+
+    <div class="row g-4">
+        <!-- Customer Details Form -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-person-lines-fill text-primary me-2"></i> Customer Information</h4>
+                <p class="text-muted small mb-4">Please fill in your delivery details to complete your order.</p>
+
+                <form action="{% url 'checkout' %}" method="POST" id="checkoutForm">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Full Name <span class="text-danger">*</span></label>
+                        {{ form.name }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Phone Number <span class="text-danger">*</span></label>
+                        {{ form.phone }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Delivery Address <span class="text-danger">*</span></label>
+                        {{ form.address }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Email Address (Optional)</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold shadow">
+                            <i class="bi bi-box-seam me-2"></i> Place Order Now
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Order Summary Preview -->
+        <div class="col-lg-5">
+            <div class="order-summary-card">
+                <h4 class="fw-bold mb-3 border-bottom pb-2">Order Items</h4>
+
+                <div class="list-group list-group-flush mb-3">
+                    {% for item in cart %}
+                        {% with product=item.product %}
+                            <div class="list-group-item px-0 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ product.get_image_display }}" alt="{{ product.name }}" style="width: 45px; height: 45px; object-fit: contain;" class="rounded border">
+                                    <div>
+                                        <h6 class="mb-0 text-truncate" style="max-width: 180px;">{{ product.name }}</h6>
+                                        <small class="text-muted">Qty: {{ item.quantity }} &times; ${{ item.price }}</small>
+                                    </div>
+                                </div>
+                                <span class="fw-bold text-dark">${{ item.total_price }}</span>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+
+                <hr class="my-3">
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Subtotal:</span>
+                    <span class="fw-semibold">${{ cart.get_total_price }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Shipping Fee:</span>
+                    <span class="text-success fw-bold">Free Shipping</span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3 pt-2 border-top">
+                    <span class="fs-5 fw-bold">Grand Total:</span>
+                    <span class="fs-4 fw-bold text-primary">${{ cart.get_total_price }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} | TechMart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Product Main Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-4 align-items-center">
+                <!-- Image Column -->
+                <div class="col-lg-6 text-center">
+                    <div class="p-3 bg-light rounded-4">
+                        <img src="{{ product.get_image_display }}" alt="{{ product.name }}" class="img-fluid product-detail-img">
+                    </div>
+                </div>
+
+                <!-- Info Column -->
+                <div class="col-lg-6">
+                    {% if product.category %}
+                        <span class="badge bg-secondary mb-2">
+                            <i class="bi {{ product.category.icon }} me-1"></i> {{ product.category.name }}
+                        </span>
+                    {% endif %}
+                    
+                    <h1 class="fw-bold text-dark mb-2">{{ product.name }}</h1>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="text-warning">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                            <span class="fw-bold text-dark ms-1">{{ product.rating }}</span>
+                        </div>
+                        <span class="text-muted">|</span>
+                        <span class="badge bg-{% if product.quantity > 0 %}success{% else %}danger{% endif %} px-3 py-2">
+                            {% if product.quantity > 0 %}In Stock ({{ product.quantity }} available){% else %}Out of Stock{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="display-5 fw-bold text-primary">${{ product.get_effective_price }}</span>
+                        {% if product.discount_price %}
+                            <span class="fs-4 text-muted text-decoration-line-through ms-2">${{ product.price }}</span>
+                            <span class="badge bg-danger ms-2 fs-6">Discounted</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="text-secondary fs-6 mb-4 leading-relaxed">
+                        {{ product.description }}
+                    </p>
+
+                    <hr class="my-4">
+
+                    <!-- Add to Cart Form -->
+                    <form action="{% url 'cart_add' product.id %}" method="POST" class="row g-3 align-items-center">
+                        {% csrf_token %}
+                        <div class="col-auto">
+                            <label class="form-label fw-bold mb-0">Quantity:</label>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary btn-qty-minus">-</button>
+                                <input type="number" name="quantity" class="form-control qty-input" value="1" min="1" max="{{ product.quantity }}">
+                                <button type="button" class="btn btn-outline-secondary btn-qty-plus">+</button>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-auto">
+                            <button type="submit" class="btn btn-primary btn-lg px-4 w-100" {% if product.quantity == 0 %}disabled{% endif %}>
+                                <i class="bi bi-cart-plus-fill me-2"></i> Add to Cart
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Features Highlights -->
+                    <div class="row g-3 mt-4 pt-3 border-top text-muted small">
+                        <div class="col-6 col-sm-4">
+                            <i class="bi bi-truck text-primary me-1"></i> Fast Shipping
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <i class="bi bi-shield-check text-primary me-1"></i> 1 Year Warranty
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <i class="bi bi-arrow-counterclockwise text-primary me-1"></i> 30 Days Return
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+        <div class="mt-5">
+            <h3 class="fw-bold mb-4"><i class="bi bi-grid text-primary me-2"></i> Related Products</h3>
+            <div class="row g-4">
+                {% for item in related_products %}
+                    <div class="col-sm-6 col-md-3">
+                        <div class="product-card">
+                            <div class="product-img-wrapper">
+                                <img src="{{ item.get_image_display }}" alt="{{ item.name }}">
+                            </div>
+                            <div class="product-body">
+                                <h6 class="product-title text-truncate">{{ item.name }}</h6>
+                                <div class="product-price mb-2">${{ item.get_effective_price }}</div>
+                                <a href="{% url 'product_detail' item.id %}" class="btn btn-outline-primary btn-sm w-100">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

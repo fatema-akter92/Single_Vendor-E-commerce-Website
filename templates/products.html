@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}All Products | TechMart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header & Category Filter Bar -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom">
+        <div>
+            <h2 class="fw-bold m-0"><i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i> Our Shop Products</h2>
+            <p class="text-muted small mb-0">Explore high quality electronics and technology items.</p>
+        </div>
+        
+        <!-- Category Filter Pills -->
+        <div class="mt-3 mt-md-0 d-flex flex-wrap gap-2">
+            <a href="{% url 'product_list' %}" class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                All Items
+            </a>
+            {% for cat in categories %}
+                <a href="{% url 'product_list' %}?category={{ cat.slug }}" class="btn btn-sm {% if selected_category == cat.slug %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                    <i class="bi {{ cat.icon }} me-1"></i> {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Active Search / Filter Badge -->
+    {% if search_query or selected_category %}
+        <div class="alert alert-light border d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <span class="fw-bold me-2">Active Filter:</span>
+                {% if selected_category %}
+                    <span class="badge bg-primary me-2">Category: {{ selected_category }}</span>
+                {% endif %}
+                {% if search_query %}
+                    <span class="badge bg-info text-dark">Search: "{{ search_query }}"</span>
+                {% endif %}
+            </div>
+            <a href="{% url 'product_list' %}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-x-circle me-1"></i> Clear Filters
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Product Grid -->
+    <div class="row g-4">
+        {% for product in products %}
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <div class="product-img-wrapper">
+                        {% if product.discount_price %}
+                            <span class="badge-discount">Sale</span>
+                        {% endif %}
+                        <span class="badge bg-{% if product.quantity > 0 %}success{% else %}danger{% endif %} badge-stock">
+                            {% if product.quantity > 0 %}Qty: {{ product.quantity }}{% else %}Out of Stock{% endif %}
+                        </span>
+                        <img src="{{ product.get_image_display }}" alt="{{ product.name }}">
+                    </div>
+                    <div class="product-body">
+                        <div class="product-rating">
+                            <i class="bi bi-star-fill"></i> {{ product.rating }}
+                        </div>
+                        <h5 class="product-title text-truncate" title="{{ product.name }}">{{ product.name }}</h5>
+                        <p class="product-desc-short">{{ product.description }}</p>
+                        
+                        <div class="mt-auto">
+                            <div class="d-flex align-items-baseline mb-3">
+                                <span class="product-price">${{ product.get_effective_price }}</span>
+                                {% if product.discount_price %}
+                                    <span class="old-price">${{ product.price }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye me-1"></i> View Details
+                                </a>
+                                <form action="{% url 'cart_add' product.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-sm w-100" {% if product.quantity == 0 %}disabled{% endif %}>
+                                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-search display-1 text-muted"></i>
+                <h4 class="mt-3">No products match your criteria</h4>
+                <p class="text-muted">Try searching for something else or clear your filters.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-primary mt-2">View All Products</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

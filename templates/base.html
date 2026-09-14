@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TechMart | Premier Single Vendor Tech Store{% endblock %}</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="{% url 'home' %}">
+                <i class="bi bi-cpu-fill fs-3 text-primary"></i> TechMart
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active fw-bold{% endif %}" href="{% url 'home' %}">
+                            <i class="bi bi-house-door me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active fw-bold{% endif %}" href="{% url 'product_list' %}">
+                            <i class="bi bi-grid-3x3-gap me-1"></i> Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/" target="_blank">
+                            <i class="bi bi-shield-lock me-1"></i> Admin Panel
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Search Bar -->
+                <form class="d-flex me-lg-3 my-2 my-lg-0" action="{% url 'product_list' %}" method="GET">
+                    <div class="input-group">
+                        <input class="form-control" type="search" name="q" placeholder="Search gadgets..." value="{{ search_query|default:'' }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Cart Button -->
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'cart_detail' %}" class="btn btn-outline-light position-relative">
+                        <i class="bi bi-cart3 me-1 fs-5"></i> Cart
+                        {% if cart_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ cart_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Django Flash Messages -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white"><i class="bi bi-cpu-fill text-primary"></i> TechMart Shop</h5>
+                    <p>Your one-stop destination for high-performance laptops, smartphones, PC components, and tech accessories. Built with Django & Bootstrap.</p>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="mb-2"><a href="{% url 'product_list' %}">All Products</a></li>
+                        <li class="mb-2"><a href="{% url 'cart_detail' %}">Shopping Cart</a></li>
+                        <li class="mb-2"><a href="{% url 'checkout' %}">Checkout</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Categories</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'product_list' %}?category=laptops">Laptops & PCs</a></li>
+                        <li class="mb-2"><a href="{% url 'product_list' %}?category=smartphones">Smartphones</a></li>
+                        <li class="mb-2"><a href="{% url 'product_list' %}?category=audio">Audio & Headphones</a></li>
+                        <li class="mb-2"><a href="{% url 'product_list' %}?category=accessories">Accessories</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Customer Service</h5>
+                    <p class="mb-1"><i class="bi bi-geo-alt-fill text-primary me-2"></i> 100 Tech Hub Boulevard</p>
+                    <p class="mb-1"><i class="bi bi-telephone-fill text-primary me-2"></i> +1 (800) 555-TECH</p>
+                    <p class="mb-1"><i class="bi bi-envelope-fill text-primary me-2"></i> support@techmart.com</p>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3 border-secondary">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small">&copy; 2026 TechMart Single Vendor E-commerce. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <i class="bi bi-shield-check text-success fs-5 me-2"></i> Secure Django Platform
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
