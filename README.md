@@ -7,32 +7,32 @@ A responsive single-vendor e-commerce web application built using **Django**, **
 ## 🚀 Features
 
 ### Core Required Features
-1. **Home Page (`/`)**:
+1. **Home Page )**:
    - Shop Name & Brand Logo (`TechMart`).
    - Navigation Bar with dynamic Cart Item Counter.
    - Interactive Bootstrap Banner / Carousel showcasing featured items.
    - Category grid & Featured Products preview.
    - Responsive Footer.
-2. **Products Page (`/products/`)**:
+2. **Products Page )**:
    - Full product listing loaded dynamically from SQLite database.
    - Product Card displaying Image, Name, Price, Discount price, Short description, "View Details", and "Add to Cart" buttons.
    - **Category Filtering & Real-time Product Search**.
-3. **Product Details Page (`/products/<id>/`)**:
+3. **Product Details Page )**:
    - High-res Product Image, Name, Price, Rating, and Detailed description.
    - Stock availability status indicator.
    - Interactive Quantity selector (+ / - controls).
    - "Add to Cart" form.
    - Related products section.
-4. **Shopping Cart (`/cart/`)**:
+4. **Shopping Cart )**:
    - Interactive session-based shopping cart.
-   - Live item quantity update (increase / decrease / manual input).
+   - Live item quantity update .
    - Remove product option.
    - Instant Subtotal and Total Price calculations.
-5. **Checkout Page (`/checkout/`)**:
+5. **Checkout Page )**:
    - Checkout Form collecting **Customer Name**, **Phone Number**, and **Delivery Address** (with client-side & server-side validation).
    - Order Summary breakdown.
    - Saves `Customer` and `Order` entries in the Django database upon order placement.
-6. **Order Success Page (`/order-success/<order_id>/`)**:
+6. **Order Success Page )**:
    - Confirmation notification: **"Order Placed Successfully!"**.
    - Complete breakdown of customer information, ordered products, quantities, total price, and order status.
 7. **Django Admin Panel (`/admin/`)**:
@@ -50,7 +50,7 @@ A responsive single-vendor e-commerce web application built using **Django**, **
 ---
 
 
-Open your browser and visit: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+Open your browser and visit: https://light-moments-share.loca.lt/
 
 ---
 
