@@ -50,8 +50,6 @@ A responsive single-vendor e-commerce web application built using **Django**, **
 ---
 
 
-Open your browser and visit: https://light-moments-share.loca.lt/
-
 ---
 
 
